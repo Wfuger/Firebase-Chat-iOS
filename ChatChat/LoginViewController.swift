@@ -25,6 +25,9 @@ import Firebase
 
 class LoginViewController: UIViewController {
     
+    var user: FIRUser!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -34,9 +37,19 @@ class LoginViewController: UIViewController {
             if error != nil {
                 print("WILL: Error authenticating anonomously with Firebase\(error?.localizedDescription)")
             }
+            if let user = user {
+                self.user = user
+            }
             self.performSegueWithIdentifier("LoginToChat", sender: nil)
         })
     }
   
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        super.prepareForSegue(segue, sender: sender)
+        let navVC = segue.destinationViewController as! UINavigationController
+        let chatVC = navVC.viewControllers.first as! ChatViewController
+        chatVC.senderId = user.uid
+        chatVC.senderDisplayName = ""
+    }
 }
 
